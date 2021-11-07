@@ -1,4 +1,4 @@
-package com.java.board.auth;
+package com.java.board.service.auth;
 
 import com.java.board.domain.dto.auth.LoginDto;
 import com.java.board.domain.dto.auth.RegisterDto;

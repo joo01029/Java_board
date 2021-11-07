@@ -4,6 +4,8 @@ import com.java.board.enums.Role;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -29,4 +31,6 @@ public class User {
 	@Column(nullable = false)
 	@Enumerated(value = EnumType.STRING)
 	private Role role;
+	@OneToMany(mappedBy = "user", cascade = {CascadeType.REMOVE})
+	private List<Board> boards = new ArrayList<>();
 }

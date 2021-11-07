@@ -1,0 +1,5 @@
+/build
+/src/main/resources/application.yml
+/gradle
+/.gradle
+/src/main/resources/static

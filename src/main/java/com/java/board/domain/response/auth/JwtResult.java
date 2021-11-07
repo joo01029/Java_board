@@ -15,9 +15,4 @@ public class JwtResult {
 	private Date accessExpiredAt;
 	private String refreshToken;
 	private Date refreshExpiredAt;
-
-	public static JwtResultBuilder builder(){
-		return new JwtResultBuilder();
-	}
-
 }

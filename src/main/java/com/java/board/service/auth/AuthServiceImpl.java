@@ -1,4 +1,4 @@
-package com.java.board.auth;
+package com.java.board.service.auth;
 
 
 import com.java.board.constant.TimeConstant;
@@ -10,7 +10,9 @@ import com.java.board.domain.response.auth.JwtResult;
 import com.java.board.enums.JwtAuth;
 import com.java.board.enums.Role;
 import com.java.board.exception.CustomException;
+import com.java.board.lib.Crypto;
 import com.java.board.lib.JwtProvider;
+import com.java.board.service.user.UserService;
 import io.jsonwebtoken.Claims;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,12 +26,16 @@ import java.util.Date;
 public class AuthServiceImpl implements AuthService{
 	private UserRepo userRepo;
 	private JwtProvider jwtProvider;
+	private Crypto crypto;
+	private UserService userService;
 
 	@Transactional
 	@Override
 	public void register(RegisterDto registerDto) {
-		if(getUserById(registerDto.getId()) != null)
+		if(userService.getUserById(registerDto.getId()) != null)
 			throw new CustomException(HttpStatus.FORBIDDEN, "이미 존재하는 사람");
+
+		registerDto.setPassword(crypto.encryption(registerDto.getPassword()));
 
 		User user = User.builder()
 				.id(registerDto.getId())
@@ -44,10 +50,13 @@ public class AuthServiceImpl implements AuthService{
 	@Override
 	@Transactional(readOnly = true)
 	public JwtResult login(LoginDto loginDto) {
-		User user = getUserById(loginDto.getId());
+		User user = userService.getUserById(loginDto.getId());
 
 		if(user == null)
 			throw new CustomException(HttpStatus.NOT_FOUND, "존재하지 않는 유저");
+
+		loginDto.setPassword(crypto.encryption(loginDto.getPassword()));
+
 		if(!user.getPassword().equals(loginDto.getPassword()))
 			throw new CustomException(HttpStatus.FORBIDDEN, "비밀번호가 다릅니다");
 
@@ -73,7 +82,7 @@ public class AuthServiceImpl implements AuthService{
 	public JwtResult refreshToken(String refreshToken) {
 		Claims claims = jwtProvider.validToken(refreshToken, JwtAuth.REFRESH);
 		Long idx = Long.valueOf(claims.get("idx").toString());
-		User user = getUserByIdx(idx);
+		User user = userService.getUserByIdx(idx);
 
 		if(user == null)
 			throw new CustomException(HttpStatus.NOT_FOUND, "존재하지 않는 유저");
@@ -85,11 +94,4 @@ public class AuthServiceImpl implements AuthService{
 		return getJwts(user, canRefresh_refreshToken);
 	}
 
-	public User getUserById(String id){
-		return userRepo.findById(id).orElse(null);
-	}
-
-	public User getUserByIdx(Long idx){
-		return userRepo.findByIdx(idx).orElse(null);
-	}
 }
