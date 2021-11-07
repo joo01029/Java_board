@@ -3,6 +3,7 @@ package com.java.board.domain.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -24,8 +25,12 @@ public class Board {
 	@JoinColumn(name = "user_idx")
 	private User user;
 
-	public void add(User user){
-		this.user = user;
-		user.getBoards().add(this);
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<Like> likes;
+
+
+
+	public void add(Like like){
+		this.likes.add(like);
 	}
 }

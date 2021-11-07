@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -29,11 +31,23 @@ public class BoardServiceImpl implements BoardService {
 				.title(makeBoardDto.getTitle())
 				.content(makeBoardDto.getContent())
 				.build();
-		board.add(user);
+		user.add(board);
 
 		BoardRo boardRo = changeBoardToBoardRo(boardRepo.save(board));
-		userRepo.save(user);
+		boardRo.setLikeStatus(false);
+		boardRo.setCommentNum(0);
+		boardRo.setLikeNum(0);
 		return boardRo;
+	}
+
+	@Override
+	public List<BoardRo> getBoards(Long user_idx) {
+		User user = userService.getUserByIdx(user_idx);
+		return boardRepo.findAll().stream()
+				.map((board)->{
+					BoardRo boardRo = changeBoardToBoardRo(board);
+
+				});
 	}
 
 	private BoardRo changeBoardToBoardRo(Board board){
