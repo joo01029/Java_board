@@ -31,6 +31,16 @@ public class User {
 	@Column(nullable = false)
 	@Enumerated(value = EnumType.STRING)
 	private Role role;
+
 	@OneToMany(mappedBy = "user", cascade = {CascadeType.REMOVE})
 	private List<Board> boards = new ArrayList<>();
+	@OneToMany(mappedBy = "user", cascade = {CascadeType.REMOVE})
+	private List<Like> likes = new ArrayList<>();
+	@OneToMany(mappedBy = "user", cascade = {CascadeType.REMOVE})
+	private List<Comment> Comments = new ArrayList<>();
+
+	public void add(Board board){
+		board.setUser(this);
+		this.getBoards().add(board);
+	}
 }

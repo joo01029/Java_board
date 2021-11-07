@@ -10,11 +10,14 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "board_like", indexes = {@Index(columnList = "id")})
-public class Like {
+@Table(indexes = {@Index(columnList = "id")})
+public class Comment {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
+	@Column(nullable = false)
+	private String comment;
 
 	@ManyToOne
 	@JoinColumn(name = "user_idx")
@@ -23,5 +26,4 @@ public class Like {
 	@ManyToOne
 	@JoinColumn(name = "board_id")
 	private Board board;
-
 }

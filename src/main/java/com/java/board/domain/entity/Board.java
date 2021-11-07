@@ -5,10 +5,12 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.List;
 
+@Builder
 @Entity
 @Getter
 @Setter
-@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(indexes = {@Index(columnList = "id")})
 public class Board {
 	@Id
@@ -25,12 +27,20 @@ public class Board {
 	@JoinColumn(name = "user_idx")
 	private User user;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "board",cascade = CascadeType.ALL)
 	private List<Like> likes;
 
+	@OneToMany(mappedBy = "board",cascade = CascadeType.ALL)
+	private List<Comment> comments;
 
 
 	public void add(Like like){
+		like.setBoard(this);
 		this.likes.add(like);
+	}
+
+	public void add(Comment comment){
+		comment.setBoard(this);
+		this.comments.add(comment);
 	}
 }

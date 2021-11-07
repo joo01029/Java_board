@@ -6,8 +6,11 @@ import com.java.board.domain.entity.User;
 import com.java.board.domain.response.board.BoardRo;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public interface BoardService {
 	BoardRo makeBoard(MakeBoardDto makeBoardDto, Long user_idx);
 	List<BoardRo> getBoards(Long user_idx);
+	void updateBoard(Long board_id, MakeBoardDto makeBoardDto, Long user_idx);
+	void removeBoard(Long board_id, Long user_idx);
 }
