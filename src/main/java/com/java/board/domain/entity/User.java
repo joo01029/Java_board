@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Builder
@@ -32,19 +33,21 @@ public class User {
 	@Enumerated(value = EnumType.STRING)
 	private Role role;
 
+	@Column(nullable = false)
+	private String contact;
+
+	@Column(nullable = false)
+	private String birthday;
+
+	@Column(nullable = false)
+	private Date registerTime;
+
 	@OneToMany(mappedBy = "user", cascade = {CascadeType.REMOVE})
 	private List<Board> boards = new ArrayList<>();
-	@OneToMany(mappedBy = "user", cascade = {CascadeType.REMOVE})
-	private List<Like> likes = new ArrayList<>();
-	@OneToMany(mappedBy = "user", cascade = {CascadeType.REMOVE})
-	private List<Comment> Comments = new ArrayList<>();
+
 
 	public void add(Board board) {
 		board.setUser(this);
 		this.getBoards().add(board);
-	}
-	public void add(Comment comment) {
-		comment.setUser(this);
-		this.getComments().add(comment);
 	}
 }

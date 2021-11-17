@@ -12,8 +12,5 @@ public class BoardRo {
 	private Long id;
 	private String title;
 	private String content;
-	private Long commentNum = 0L;
-	private Long likeNum = 0L;
-	private Boolean likeStatus = false;
 	private UserRo user;
 }
