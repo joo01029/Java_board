@@ -39,8 +39,12 @@ public class User {
 	@OneToMany(mappedBy = "user", cascade = {CascadeType.REMOVE})
 	private List<Comment> Comments = new ArrayList<>();
 
-	public void add(Board board){
+	public void add(Board board) {
 		board.setUser(this);
 		this.getBoards().add(board);
+	}
+	public void add(Comment comment) {
+		comment.setUser(this);
+		this.getComments().add(comment);
 	}
 }

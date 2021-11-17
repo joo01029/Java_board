@@ -7,6 +7,7 @@ import com.java.board.lib.CheckJwtType;
 import com.java.board.lib.JwtProvider;
 import io.jsonwebtoken.Claims;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -23,8 +24,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Component
-@AllArgsConstructor
-@Slf4j
+@RequiredArgsConstructor
 public class JwtFilter implements Filter {
 	private final HandlerExceptionResolver handlerExceptionResolver;
 	private final JwtProvider jwtProvider;
@@ -33,25 +33,23 @@ public class JwtFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		try {
 			String token = CheckJwtType.extract((HttpServletRequest) request, "Bearer");
-			if ( ((HttpServletRequest) request).getMethod() != "OPTIONS") {
+			if (((HttpServletRequest) request).getMethod() != "OPTIONS") {
 				Set<GrantedAuthority> roles = new HashSet<>();
 
-				if (null == token ) {
+				if (null == token) {
 					request.setAttribute("idx", null);
-					roles.add( new SimpleGrantedAuthority("ROLE_"+ Role.USER.toString()));
-				}else{
+					roles.add(new SimpleGrantedAuthority("ROLE_" + Role.USER.toString()));
+				} else {
 					Claims claims = jwtProvider.validToken(token, JwtAuth.ACCESS);
 					request.setAttribute("idx", claims.get("idx"));
-					roles.add( new SimpleGrantedAuthority("ROLE_"+claims.get("role").toString()));
+					roles.add(new SimpleGrantedAuthority("ROLE_" + claims.get("role").toString()));
 				}
-
 				SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(null, null, roles));
 			}
-
 			chain.doFilter(request, response);
-		}catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
-			handlerExceptionResolver.resolveException((HttpServletRequest) request,(HttpServletResponse) response,null,e);
+			handlerExceptionResolver.resolveException((HttpServletRequest) request, (HttpServletResponse) response, null, e);
 		}
 	}
 }

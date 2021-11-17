@@ -27,19 +27,19 @@ public class Board {
 	@JoinColumn(name = "user_idx")
 	private User user;
 
-	@OneToMany(mappedBy = "board",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
 	private List<Like> likes;
 
-	@OneToMany(mappedBy = "board",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
 	private List<Comment> comments;
 
 
-	public void add(Like like){
+	public void add(Like like) {
 		like.setBoard(this);
 		this.likes.add(like);
 	}
 
-	public void add(Comment comment){
+	public void add(Comment comment) {
 		comment.setBoard(this);
 		this.comments.add(comment);
 	}

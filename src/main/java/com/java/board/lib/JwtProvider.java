@@ -19,9 +19,9 @@ import java.util.Map;
 @Component
 public class JwtProvider {
 	@Value("${jwt.auth.access}")
-	String ACCESSSECRET_KEY;
+	private String ACCESSSECRET_KEY;
 	@Value("${jwt.auth.refresh}")
-	String REFRESHSECRET_KEY;
+	private String REFRESHSECRET_KEY;
 
 	public String createToken(User user, long ttlMillis, JwtAuth authType) {
 		if (ttlMillis <= 0)
@@ -75,18 +75,18 @@ public class JwtProvider {
 	}
 
 	public Claims validToken(String token, JwtAuth jwtAuth) {
-		try{
+		try {
 			Key key = makeSigningKey(jwtAuth);
 			Claims claims = Jwts.parserBuilder().setSigningKey(key)
 					.build()
 					.parseClaimsJws(token)
 					.getBody();
 			return claims;
-		}catch (ExpiredJwtException e) {
+		} catch (ExpiredJwtException e) {
 			throw new CustomException(HttpStatus.GONE, "토큰 만료");
-		}catch (MalformedJwtException e){
+		} catch (MalformedJwtException e) {
 			throw new CustomException(HttpStatus.UNAUTHORIZED, "토큰 위조");
-		}catch (Exception e){
+		} catch (Exception e) {
 			throw e;
 		}
 	}

@@ -12,7 +12,7 @@ public class CheckTokenInterceptorConfig implements WebMvcConfigurer {
 	private CheckTokenInterceptor checkTokenInterceptor;
 
 	@Override
-	public void addInterceptors(InterceptorRegistry registry){
+	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(checkTokenInterceptor)
 				.addPathPatterns("/user")
 				.addPathPatterns("/board")

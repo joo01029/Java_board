@@ -17,11 +17,11 @@ import java.util.ArrayList;
 @EnableSwagger2
 public class SwaggerConfig {
 	@Bean
-	public Docket api(){
+	public Docket api() {
 		ArrayList<Parameter> global = new ArrayList<>();
 		global.add(new ParameterBuilder().name("Authorization")
-		.description("Bearer Token").parameterType("header")
-		.required(false).modelRef(new ModelRef("string")).build());
+				.description("Bearer Token").parameterType("header")
+				.required(false).modelRef(new ModelRef("string")).build());
 
 		return new Docket(DocumentationType.SWAGGER_2)
 				.globalOperationParameters(global)

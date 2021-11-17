@@ -23,25 +23,25 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private final JwtProvider jwtProvider;
-
 	private final HandlerExceptionResolver handlerExceptionResolver;
+
 	@Override
 	public void configure(WebSecurity web) {
 		web.ignoring()
-			.antMatchers("/swagger-ui.html");
+				.antMatchers("/swagger-ui.html");
 	}
 
 	@Override
-	public void configure(HttpSecurity http){
+	public void configure(HttpSecurity http) {
 		try {
 			http
-	            .httpBasic().disable()
+					.httpBasic().disable()
 					.cors().configurationSource(corsConfiguration())
 					.and()
 					.csrf().disable()
 					.authorizeRequests()
-					.antMatchers("/auth","auth/**").permitAll()
-					.antMatchers("/board","/board/**").permitAll();
+					.antMatchers("/auth", "auth/**").permitAll()
+					.antMatchers("/board", "/board/**").permitAll();
 			JwtFilter jwtFilter = new JwtFilter(handlerExceptionResolver, jwtProvider);
 			http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 		} catch (Exception exception) {
@@ -49,8 +49,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		}
 
 	}
+
 	@Bean
-	public CorsConfigurationSource corsConfiguration(){
+	public CorsConfigurationSource corsConfiguration() {
 		CorsConfiguration configuration = new CorsConfiguration();
 
 		configuration.setAllowedOriginPatterns(Collections.singletonList("*"));
