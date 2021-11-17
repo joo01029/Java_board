@@ -14,25 +14,25 @@ import com.java.board.lib.Crypto;
 import com.java.board.lib.JwtProvider;
 import com.java.board.service.user.UserService;
 import io.jsonwebtoken.Claims;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
-public class AuthServiceImpl implements AuthService{
-	private UserRepo userRepo;
-	private JwtProvider jwtProvider;
-	private Crypto crypto;
-	private UserService userService;
+public class AuthServiceImpl implements AuthService {
+	private final UserRepo userRepo;
+	private final JwtProvider jwtProvider;
+	private final Crypto crypto;
+	private final UserService userService;
 
 	@Transactional
 	@Override
 	public void register(RegisterDto registerDto) {
-		if(userService.getUserById(registerDto.getId()) != null)
+		if (userService.getUserById(registerDto.getId()) != null)
 			throw new CustomException(HttpStatus.FORBIDDEN, "이미 존재하는 사람");
 
 		registerDto.setPassword(crypto.encryption(registerDto.getPassword()));
@@ -52,23 +52,23 @@ public class AuthServiceImpl implements AuthService{
 	public JwtResult login(LoginDto loginDto) {
 		User user = userService.getUserById(loginDto.getId());
 
-		if(user == null)
+		if (user == null)
 			throw new CustomException(HttpStatus.NOT_FOUND, "존재하지 않는 유저");
 
 		loginDto.setPassword(crypto.encryption(loginDto.getPassword()));
 
-		if(!user.getPassword().equals(loginDto.getPassword()))
+		if (!user.getPassword().equals(loginDto.getPassword()))
 			throw new CustomException(HttpStatus.FORBIDDEN, "비밀번호가 다릅니다");
 
 
 		return getJwts(user, true);
 	}
 
-	private JwtResult getJwts(User user,  boolean canRefresh_refreshToken){
+	private JwtResult getJwts(User user, boolean canRefresh_refreshToken) {
 		int accessExpired_at = TimeConstant.MILLISECOND_HOUR;
 		String accessToken = jwtProvider.createToken(user, accessExpired_at, JwtAuth.ACCESS);
 		int refreshExpired_at = 4 * TimeConstant.MILLISECOND_DAY;
-		String refreshToken = canRefresh_refreshToken ?jwtProvider.createToken(user, refreshExpired_at, JwtAuth.REFRESH) : null;
+		String refreshToken = canRefresh_refreshToken ? jwtProvider.createToken(user, refreshExpired_at, JwtAuth.REFRESH) : null;
 
 		return JwtResult.builder()
 				.accessToken(accessToken)
@@ -84,11 +84,11 @@ public class AuthServiceImpl implements AuthService{
 		Long idx = Long.valueOf(claims.get("idx").toString());
 		User user = userService.getUserByIdx(idx);
 
-		if(user == null)
+		if (user == null)
 			throw new CustomException(HttpStatus.NOT_FOUND, "존재하지 않는 유저");
 
 		boolean canRefresh_refreshToken = false;
-		if(claims.getExpiration().getTime() - System.currentTimeMillis() <= TimeConstant.MILLISECOND_DAY)
+		if (claims.getExpiration().getTime() - System.currentTimeMillis() <= TimeConstant.MILLISECOND_DAY)
 			canRefresh_refreshToken = true;
 
 		return getJwts(user, canRefresh_refreshToken);
