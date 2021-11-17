@@ -8,8 +8,10 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BoardRo {
+public class BoardDetailRo {
 	private Long id;
 	private String title;
+	private String content;
+	private Boolean isMine;
 	private UserRo user;
 }

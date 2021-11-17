@@ -16,6 +16,7 @@ public class CheckTokenInterceptorConfig implements WebMvcConfigurer {
 		registry.addInterceptor(checkTokenInterceptor)
 				.addPathPatterns("/user")
 				.addPathPatterns("/board")
-				.addPathPatterns("/board/**");
+				.addPathPatterns("/board/**")
+				.excludePathPatterns("/board/list", "/board/detail/**");
 	}
 }

@@ -4,6 +4,7 @@ import com.java.board.domain.dto.board.MakeBoardDto;
 import com.java.board.domain.entity.Board;
 import com.java.board.domain.entity.User;
 import com.java.board.domain.repo.BoardRepo;
+import com.java.board.domain.response.board.BoardDetailRo;
 import com.java.board.domain.response.board.BoardRo;
 import com.java.board.domain.response.user.UserRo;
 import com.java.board.exception.CustomException;
@@ -54,10 +55,24 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
+	public BoardDetailRo getBoard(Long user_idx, Long board_idx) {
+		User user = new User();
+		if(user_idx != null){
+			user = userService.getUserByIdx(user_idx);
+		}
+		Board board = findBoardById(board_idx);
+		Boolean isMine = checkBoardUser(board, user);
+		return changeBoardToBoardDetailRo(board, isMine);
+	}
+
+	@Override
 	@Transactional
 	public void updateBoard(Long board_id, MakeBoardDto makeBoardDto, Long user_idx) {
 		User user = userService.getUserByIdx(user_idx);
-		Board board = checkBoardUser(board_id, user);
+		Board board = findBoardById(board_id);
+		if(!checkBoardUser(board, user)){
+			throw new CustomException(HttpStatus.BAD_REQUEST, "유저의 게시글이 아닙니다");
+		}
 		board.setTitle(makeBoardDto.getTitle());
 		board.setContent(makeBoardDto.getContent());
 
@@ -68,7 +83,10 @@ public class BoardServiceImpl implements BoardService {
 	@Transactional
 	public void removeBoard(Long board_id, Long user_idx) {
 		User user = userService.getUserByIdx(user_idx);
-		checkBoardUser(board_id, user);
+		Board board = findBoardById(board_id);
+		if(!checkBoardUser(board, user)){
+			throw new CustomException(HttpStatus.BAD_REQUEST, "유저의 게시글이 아닙니다");
+		}
 
 		boardRepo.deleteById(board_id);
 
@@ -80,15 +98,24 @@ public class BoardServiceImpl implements BoardService {
 				.orElseGet(() -> {
 					throw new CustomException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다.");
 				});
+
+
 	}
 
 	@Override
-	public Board checkBoardUser(Long board_id, User user) {
-		Board board = findBoardById(board_id);
-		if(board.getUser().getIdx().equals(user.getIdx())){
-			return board;
-		}
-		throw new CustomException(HttpStatus.BAD_REQUEST, "유저의 게시글이 아닙니다");
+	public Boolean checkBoardUser(Board board, User user) {
+		return board.getUser().getIdx().equals(user.getIdx());
+
+	}
+
+	private BoardDetailRo changeBoardToBoardDetailRo(Board board, Boolean isMine){
+		UserRo user = userService.userToRo(board.getUser());
+		return BoardDetailRo.builder()
+				.id(board.getId())
+				.title(board.getTitle())
+				.user(user)
+				.isMine(isMine)
+				.build();
 	}
 
 	private BoardRo changeBoardToBoardRo(Board board) {
@@ -96,7 +123,6 @@ public class BoardServiceImpl implements BoardService {
 		return BoardRo.builder()
 				.id(board.getId())
 				.title(board.getTitle())
-				.content(board.getContent())
 				.user(user)
 				.build();
 	}

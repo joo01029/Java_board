@@ -4,6 +4,7 @@ import com.java.board.annotation.AutoLogging;
 import com.java.board.domain.dto.board.MakeBoardDto;
 import com.java.board.domain.response.Response;
 import com.java.board.domain.response.ResponseData;
+import com.java.board.domain.response.board.BoardDetailRo;
 import com.java.board.domain.response.board.BoardRo;
 import com.java.board.service.board.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -28,11 +29,23 @@ public class BoardController {
 	}
 
 	@AutoLogging
-	@GetMapping
+	@GetMapping("/list")
 	public ResponseData<List<BoardRo>> getBoard(HttpServletRequest request) {
-		Long user_idx = Long.valueOf(request.getAttribute("idx").toString());
+		Long user_idx = null;
+		if(request.getAttribute("idx") != null)
+			user_idx = Long.valueOf(request.getAttribute("idx").toString());
 		List<BoardRo> boards = boardService.getBoards(user_idx);
 		return new ResponseData<>(boards);
+	}
+
+	@AutoLogging
+	@GetMapping("/detail/{board_id}")
+	public ResponseData<BoardDetailRo> getBoard(@PathVariable Long board_id, HttpServletRequest request) {
+		Long user_idx = null;
+		if(request.getAttribute("idx") != null)
+			user_idx = Long.valueOf(request.getAttribute("idx").toString());
+		BoardDetailRo board = boardService.getBoard(user_idx, board_id);
+		return new ResponseData<>(board);
 	}
 
 	@AutoLogging
