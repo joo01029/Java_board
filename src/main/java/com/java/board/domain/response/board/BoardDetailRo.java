@@ -13,7 +13,6 @@ public class BoardDetailRo {
 	private Long id;
 	private String title;
 	private String content;
-	private Boolean isMine;
 	private Date lastTime;
 	private String writer;
 }

@@ -40,7 +40,7 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public List<BoardRo> getBoards() {
 
-		return boardRepo.findAll(Sort.by(Sort.Direction.DESC, "update_at")).stream()
+		return boardRepo.findAll(Sort.by(Sort.Direction.DESC, "updateAt")).stream()
 				.map((board) -> {
 					BoardRo boardRo = changeBoardToBoardRo(board);
 					return boardRo;
@@ -88,6 +88,7 @@ public class BoardServiceImpl implements BoardService {
 				.title(board.getTitle())
 				.writer(board.getWriter())
 				.lastTime(board.getUpdateAt())
+				.content(board.getContent())
 				.build();
 	}
 
