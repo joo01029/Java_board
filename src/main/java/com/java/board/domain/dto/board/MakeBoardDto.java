@@ -12,4 +12,6 @@ public class MakeBoardDto {
 	private String title;
 	@NotBlank(message = "공백 불가능")
 	private String content;
+	@NotBlank(message = "공백 불가능")
+	private String writer;
 }

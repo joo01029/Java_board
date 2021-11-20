@@ -1,6 +1,10 @@
 package com.java.board.domain.entity;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -13,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(indexes = {@Index(columnList = "id")})
-public class Board {
+public class Board extends BaseTimeEntity{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -24,11 +28,8 @@ public class Board {
 	@Column(nullable = false)
 	private String content;
 
-	@ManyToOne
-	@JoinColumn(name = "user_idx")
-	private User user;
 
 	@Column(nullable = false)
-	private Date writeTime;
+	private String writer;
 
 }

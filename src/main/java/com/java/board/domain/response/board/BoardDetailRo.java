@@ -1,7 +1,8 @@
 package com.java.board.domain.response.board;
 
-import com.java.board.domain.response.user.UserRo;
 import lombok.*;
+
+import java.util.Date;
 
 @Getter
 @Setter
@@ -13,5 +14,6 @@ public class BoardDetailRo {
 	private String title;
 	private String content;
 	private Boolean isMine;
-	private UserRo user;
+	private Date lastTime;
+	private String writer;
 }
