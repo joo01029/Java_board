@@ -15,4 +15,14 @@ public class ViewController {
 	public String detailPage(){
 		return "detail";
 	}
+
+	@RequestMapping("make")
+	public String makePage(){
+		return "make";
+	}
+
+	@RequestMapping("update")
+	public String updatePage(){
+		return "update";
+	}
 }

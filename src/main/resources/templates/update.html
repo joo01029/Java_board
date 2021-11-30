@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="/css/make.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <div id="form">
+        <div>
+            <label>제목</label>
+            <br>
+            <input id="title" type="text">
+        </div>
+        <div>
+            <label>이름</label>
+            <br>
+            <input id="name" type="text">
+        </div>
+        <div>
+            <label>내용</label>
+            <br>
+            <textarea id="content"></textarea>
+        </div>
+        <div id="submit" onclick="update_board()"> 완료</div>
+        <div id="cancel" onclick="cancel()"> 취소</div>
+    </div>
+</body>
+<script
+        src="https://code.jquery.com/jquery-2.2.4.js"
+        integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+        crossorigin="anonymous"></script>
+<script src="lib/getParameter.js"></script>
+<script src="network/board.js"></script>
+<script src="page/update.js"></script>
+</html>
